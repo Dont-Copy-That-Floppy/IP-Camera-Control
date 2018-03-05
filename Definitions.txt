@@ -1,0 +1,39 @@
+I have a PTZ camera which has a wiper that is only activated with URL commands, this camera is connected to a network.
+The only thing that will connect to the Pi would be a toggle switch, and the Pi would be connected to the same network as the PTZ camera.
+The Pi would need to respond to the toggle switch states, the normal position stops the wiper. And the switched position moves the wiper continuously.
+When in the normal state, the Pi will open:
+http://192.168.1.201/cgi-bin/rainBrush.cgi?action=stopMove[&channel=1]
+The browser will prompt for a username and password which is admin and admin
+When entered, the wiper is stopped and the address always responds with “OK” and the Pi should then close the URL.
+When in the switch state, the Pi will open:
+http://192.168.1.201/cgi-bin/rainBrush.cgi?action=moveContinuously&interval=1[&channel=1]
+The browser will prompt for a username and password again, which is admin and admin
+When entered, the wiper moves continuously and the address always responds with “OK” and the Pi should then close the URL.
+
+If the Pi encounters an error connecting to the PTZ, it should retry opening the URL it is switched to, for example, if the PTZ is still booting up and the address isn’t accessible right away, the Pi will just keep trying
+
+This would be installed in the cab of a large excavator, which runs off 24vdc
+I assume the Pi is a 12v device, I do have a 24v to 12v stepdown but the Pi will need to shut off safely with the rest of the system. 
+So the Pi needs to monitor the ignition state and shut down with the machine is turned off. Is this possible on a 24V system?
+
+
+
+Theory:
+    (Software)
+        Port scan for port 80 and port 554; 
+        if both open, probably camera, go to this connection
+        else try fixed ip 192.168.1.201
+            if responding go to next function
+            else stay, wait 1 minute and try again
+
+        
+        if switch is in the ON state access the url { http://192.168.1.201/cgi-bin/rainBrush.cgi?action=stopMove[&channel=1] }, enter the credentials of admin, and admin, close connection, then wait for state change
+        else access the url { http://192.168.1.201/cgi-bin/rainBrush.cgi?action=moveContinuously&interval=1[&channel=1] }, enter the credentials of admin, and admin, close connection, then wait for state change
+
+        if ignition is off, set pi to sleep
+        else continue running toggle check
+
+    (Hardware) 
+        use input pull up on switch, resistor, diode, and gnd
+        use 24v to 5v buck converter for power
+        use opto isolation to sense state of iginition wire

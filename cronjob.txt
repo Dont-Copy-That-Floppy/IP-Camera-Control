@@ -1,0 +1,1 @@
+@reboot /home/BCS ENTERPRISES, INC. Project/Camera_Control.sh
