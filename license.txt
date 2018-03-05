@@ -1,0 +1,1 @@
+All software contained in this directory and daughter directories are hereby licensed as GPLv3
