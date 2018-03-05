@@ -9,6 +9,7 @@ echo "in" > /sys/class/gpio/gpio35/direction
 echo "37" > /sys/class/gpio/export
 echo "in" > /sys/class/gpio/gpio37/direction
 
+## checks to see if camera is online
 portcheck=0
 cam_ip="192.168.1.201"
 stop_tracking="/cgi-bin/rainBrush.cgi?action=stopMove[&channel=1]"
@@ -41,7 +42,7 @@ while [ $infinite -lt 1 ]; do
     fi
 
     ignition_state=($(cat /sys/class/gpio/gpio37/value))
-    if [ ignition_state -ne 1 ]; then
+    if [ $ignition_state -ne 1 ]; then
         poweroff
     fi
 done
